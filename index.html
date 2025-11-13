@@ -119,7 +119,7 @@
 
     <!-- STEP 1 -->
     <div id="step1" class="step active">
-      <div class="subtitle">패키지 선택</div>
+      <div class="subtitle">패키지를 선택해 주세요</div>
       <div class="option-btn" onclick="selectPackage(this, 'CCTV 무료 패키지')">CCTV 무료 패키지</div>
       <div class="option-btn" onclick="selectPackage(this, 'POS 무료 패키지')">POS 무료 패키지</div>
       <div class="option-btn" onclick="selectPackage(this, '정수기 무료 패키지')">정수기 무료 패키지</div>
@@ -129,7 +129,10 @@
 
     <!-- STEP 2 -->
     <div id="step2" class="step">
-      <div class="subtitle">정보 입력</div>
+      <div class="subtitle">기본 정보를 입력해주세요</div>
+
+      <label>이름</label>
+      <input type="text" id="name" required>
 
       <label>오픈 예정일 *</label>
       <input type="date" id="openDate" required>
@@ -146,8 +149,8 @@
       <label>연락처 *</label>
       <input type="text" id="phone" placeholder="010-0000-0000" required oninput="formatPhone(this)">
 
-      <label>가맹점/업체명</label>
-      <input type="text" id="shopName" placeholder="가게명을 입력해주세요">
+      <label>상호명</label>
+      <input type="text" id="shopName" placeholder="매장명을 입력해주세요(예정인 경우 "예정")으로">
 
       <label>추가 문의사항</label>
       <textarea id="memo" placeholder="남기실 내용이 있다면 작성해주세요"></textarea>
@@ -175,8 +178,8 @@
   <!-- COMPLETE PAGE -->
   <div class="form-container" id="completePage" style="display:none;">
     <div class="complete-box">
-      <h1>제출이 완료되었습니다!</h1>
-      <p>담당자가 확인 후 연락드리겠습니다.</p>
+      <h1>🎉 제출이 완료되었습니다!</h1>
+      <p>담당자가 확인 후 빠른 시일내에 연락드리겠습니다.</p>
       <a class="back-btn" href="">처음으로</a>
     </div>
   </div>
