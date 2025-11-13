@@ -7,42 +7,30 @@
   <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
   <style>
-    * { box-sizing: border-box; font-family: "Noto Sans KR", sans-serif; }
-    body { background:#f6f6f6; margin:0; padding:0; display:flex; justify-content:center; }
+    * { box-sizing: border-box; font-family: "Noto Sans KR"; }
+    body { background:#f6f6f6; margin:0; display:flex; justify-content:center; }
     .form-container {
       width:420px; background:#fff; padding:32px 24px; border-radius:20px;
       margin:20px 0; box-shadow:0 4px 20px rgba(0,0,0,0.1);
     }
-
-    h1 { font-size:24px; font-weight:700; text-align:center; margin-bottom:10px; }
-    .subtitle { font-size:20px; font-weight:700; margin:14px 0; }
-
-    .option-btn {
-      width:100%; padding:16px; margin-bottom:12px; border-radius:10px;
-      border:1.5px solid #ddd; text-align:center; background:#fff;
-      font-size:16px; cursor:pointer; transition:.2s;
-    }
-    .option-btn.selected { border-color:#EB3B00; background:#FFF5F2; color:#EB3B00; font-weight:600; }
-
-    input[type="text"], input[type="email"], input[type="date"], textarea {
+    h1 { font-size:24px; font-weight:700; text-align:center; }
+    .subtitle { font-size:20px; margin:16px 0; font-weight:700; }
+    input, textarea {
       width:100%; padding:14px; font-size:16px; border:1.5px solid #ddd; border-radius:10px;
       margin-bottom:14px;
     }
-    textarea { height:80px; resize:none; }
-
-    .btn {
-      width:100%; padding:14px 0; background:#EB3B00; color:#fff;
-      font-size:16px; font-weight:600; border:none; border-radius:10px; margin-top:10px;
-      cursor:pointer;
+    .option-btn {
+      width:100%; padding:16px; margin-bottom:12px;
+      border-radius:10px; border:1.5px solid #ddd; text-align:center;
+      cursor:pointer; font-size:16px;
     }
-    .btn:hover { background:#d43200; }
-
+    .option-btn.selected { border-color:#EB3B00; background:#FFF5F2; color:#EB3B00; font-weight:600; }
+    .btn {
+      width:100%; padding:14px 0; background:#EB3B00; color:#fff; border:none;
+      border-radius:10px; margin-top:10px; cursor:pointer; font-size:16px; font-weight:600;
+    }
     .step { display:none; }
     .step.active { display:block; }
-
-    .agree-row {
-      display:flex; align-items:center; gap:8px; margin-bottom:8px;
-    }
   </style>
 </head>
 
@@ -54,10 +42,13 @@
     <div id="step1" class="step active">
       <div class="subtitle">패키지 선택</div>
 
-      <div class="option-btn" onclick="selectPackage(this, 'CCTV 무료 패키지')">CCTV 무료 패키지</div>
-      <div class="option-btn" onclick="selectPackage(this, 'POS 무료 패키지')">POS 무료 패키지</div>
-      <div class="option-btn" onclick="selectPackage(this, '정수기 무료 패키지')">정수기 무료 패키지</div>
-      <div class="option-btn" onclick="selectPackage(this, '기타 서비스 문의')">기타 서비스 문의</div>
+      <!-- package -->
+      <input type="hidden" id="package" name="package">
+
+      <div class="option-btn" onclick="selectPackage(this,'CCTV 무료 패키지')">CCTV 무료 패키지</div>
+      <div class="option-btn" onclick="selectPackage(this,'POS 무료 패키지')">POS 무료 패키지</div>
+      <div class="option-btn" onclick="selectPackage(this,'정수기 무료 패키지')">정수기 무료 패키지</div>
+      <div class="option-btn" onclick="selectPackage(this,'기타 서비스 문의')">기타 서비스 문의</div>
 
       <button class="btn" onclick="nextStep(2)">다음</button>
     </div>
@@ -66,26 +57,29 @@
     <div id="step2" class="step">
       <div class="subtitle">설치 정보 입력</div>
 
-      <label>오픈 예정일</label>
-      <input type="date" id="openDate" required>
+      <label>이름</label>
+      <input type="text" id="name" name="name">
 
-      <label>설치 주소</label>
+      <label>연락처</label>
+      <input type="text" id="phone" name="phone">
+
+      <label>가맹점/업체명</label>
+      <input type="text" id="shopName" name="shopName">
+
+      <label>오픈 예정일</label>
+      <input type="date" id="openDate" name="openDate">
+
+      <label>주소</label>
       <div style="display:flex; gap:8px;">
-        <input type="text" id="address" placeholder="주소찾기를 눌러 입력" readonly>
-        <button type="button" onclick="searchAddress()" class="btn" style="width:110px; background:#333;">주소찾기</button>
+        <input type="text" id="address" name="address" readonly>
+        <button type="button" class="btn" style="background:#333;" onclick="searchAddress()">주소찾기</button>
       </div>
 
       <label>상세 주소</label>
-      <input type="text" id="addressDetail" placeholder="상세 주소">
-
-      <label>연락처</label>
-      <input type="text" id="phone" placeholder="010-0000-0000">
-
-      <label>가맹점/업체명</label>
-      <input type="text" id="shopName" placeholder="가게명">
+      <input type="text" id="addressDetail" name="addressDetail">
 
       <label>추가 문의사항</label>
-      <textarea id="memo" placeholder="문의 내용을 남겨주세요"></textarea>
+      <textarea id="memo" name="memo"></textarea>
 
       <button class="btn" onclick="nextStep(3)">다음</button>
     </div>
@@ -94,77 +88,60 @@
     <div id="step3" class="step">
       <div class="subtitle">약관 동의</div>
 
-      <div class="agree-row">
-        <input type="checkbox" id="privacyAgree">
-        <label for="privacyAgree">개인정보 수집·이용 동의 (필수)</label>
-      </div>
-
-      <div class="agree-row">
-        <input type="checkbox" id="marketingAgree">
-        <label for="marketingAgree">마케팅 정보 수신 동의 (선택)</label>
-      </div>
+      <label><input type="checkbox" id="privacyAgree" name="privacyAgree"> 개인정보 수집·이용 동의 (필수)</label>
+      <label><input type="checkbox" id="marketingAgree" name="marketingAgree"> 마케팅 정보 수신 동의 (선택)</label>
 
       <button class="btn" onclick="submitForm()">신청하기</button>
     </div>
+
   </div>
 
   <script>
-    let selectedPackage = "";
-
-    function selectPackage(el, value) {
-      document.querySelectorAll(".option-btn").forEach(btn => btn.classList.remove("selected"));
-      el.classList.add("selected");
-      selectedPackage = value;
+    function selectPackage(button,value){
+      document.querySelectorAll(".option-btn").forEach(b=>b.classList.remove("selected"));
+      button.classList.add("selected");
+      document.getElementById("package").value = value;
     }
 
-    function nextStep(step) {
-      document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
-      document.getElementById(`step${step}`).classList.add("active");
+    function nextStep(n){
+      document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
+      document.getElementById("step"+n).classList.add("active");
     }
 
-    function searchAddress() {
+    function searchAddress(){
       new daum.Postcode({
-        oncomplete: function(data) {
+        oncomplete:function(data){
           document.getElementById("address").value = data.address;
         }
       }).open();
     }
 
-    async function submitForm() {
-      if (!selectedPackage) return alert("패키지를 선택해주세요.");
-      if (!document.getElementById("privacyAgree").checked)
-        return alert("개인정보 수집·이용 동의는 필수입니다.");
+    async function submitForm(){
+      const url = "https://script.google.com/macros/s/AKfycbzZyviKJtAHMzGC9IkZ5f3CNqKacBqF8DFOlGP0c2vxW6rgFVtdJiH8tsrO3Nae_3ntQQ/exec";
 
-      const postData = {
-        package: selectedPackage,
+      const formData = new URLSearchParams({
+        package: document.getElementById("package").value,
+        name: document.getElementById("name").value,
+        phone: document.getElementById("phone").value,
+        shopName: document.getElementById("shopName").value,
         openDate: document.getElementById("openDate").value,
         address: document.getElementById("address").value,
         addressDetail: document.getElementById("addressDetail").value,
-        phone: document.getElementById("phone").value,
-        shopName: document.getElementById("shopName").value,
         memo: document.getElementById("memo").value,
         privacyAgree: document.getElementById("privacyAgree").checked ? "동의" : "미동의",
         marketingAgree: document.getElementById("marketingAgree").checked ? "동의" : "미동의"
-      };
+      });
 
-      try {
-        const res = await fetch("https://script.google.com/macros/s/AKfycbwyiI0BVlA9NwwyaNxWGr2TUTiICwv_Azz1LNOKJyqrLgPLAsTbpLQdxoJn1DIrgXRPHw/exec", {
-          method: "POST",
-          body: new URLSearchParams(postData)
-        });
+      const res = await fetch(url,{ method:"POST", body:formData });
+      const text = await res.text();
 
-        const text = await res.text();
-
-        if (text === "ok") {
-          alert("제출이 완료되었습니다!");
-        } else {
-          alert("전송 실패: " + text);
-        }
-
-      } catch (err) {
-        alert("오류 발생: " + err);
+      if(text === "ok"){
+        alert("제출이 완료되었습니다!");
+      } else {
+        alert("오류: " + text);
       }
     }
   </script>
+
 </body>
 </html>
