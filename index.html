@@ -1,419 +1,213 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <title>사장마켓 간편신청</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>사장마켓 간편신청</title>
+  <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; font-family: "Noto Sans KR", sans-serif; }
+    body {
+      background: #f6f6f6;
+      margin: 0; padding: 0;
+      display: flex; justify-content: center;
+    }
+    .form-container {
+      width: 420px;
+      background: #fff;
+      padding: 32px 24px;
+      border-radius: 20px;
+      margin: 20px 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
 
-    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      text-align: center;
+    }
 
-  <style>
-    :root {
-      --brand: #EB3B00;
-      --brand-dark: #d43200;
-      --bg: #f6f6f6;
-      --text: #1b1b1b;
-      --line: #e9ecef;
-      --radius: 16px;
-      --max-w: 420px;
-    }
+    label {
+      display: block;
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
 
-    * { box-sizing: border-box; }
+    .subtitle {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      margin-top: 10px;
+    }
 
-    html, body {
-      height: 100%;
-      overflow: hidden;
-      position: fixed;
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      background: var(--bg);
-      font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-      -webkit-font-smoothing: antialiased;
-      font-size: 16px;
-    }
+    .option-btn {
+      width: 100%; padding: 16px; margin-bottom: 12px;
+      border-radius: 10px; border: 1.5px solid #ddd; text-align: center;
+      background: #fff; font-size: 16px; cursor: pointer; transition: .2s;
+    }
+    .option-btn.selected {
+      border-color: #EB3B00; background: #FFF5F2; color: #EB3B00; font-weight: 600;
+    }
 
-    .page-wrap {
-      height: 100vh;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-    }
+    input[type="text"], input[type="email"], input[type="date"], textarea {
+      width: 100%; padding: 14px; font-size: 16px;
+      border: 1.5px solid #ddd; border-radius: 10px;
+      margin-bottom: 14px;
+    }
 
-    .card {
-      width: 100%;
-      max-width: var(--max-w);
-      margin: 20px auto;
-      padding: 24px 20px 20px;
-      background: #fff;
-      border-radius: var(--radius);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-      max-height: 92vh;
-      overflow-y: auto;
-    }
+    textarea {
+      height: 80px; resize: none;
+    }
 
-    .title {
-      font-size: 24px;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 8px;
-    }
+    .btn {
+      width: 100%; padding: 15px 0;
+      background: #EB3B00; color: #fff;
+      font-size: 16px; font-weight: 600;
+      border: none; border-radius: 10px;
+      margin-top: 10px; cursor: pointer;
+    }
+    .btn:hover { background: #d43200; }
 
-    .subtitle {
-      font-size: 20px;
-      text-align: center;
-      color: #868e96;
-      margin-bottom: 24px;
-    }
+    .step { display: none; }
+    .step.active { display: block; }
 
-    .steps {
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-      margin-bottom: 18px;
-    }
-    .step-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 999px;
-      background: #dee2e6;
-    }
-    .step-dot.active {
-      width: 20px;
-      background: var(--brand);
-    }
-
-    .step { display: none; }
-    .step.active { display: block; }
-
-    .section-label {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-
-    .package-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .package-btn {
-      width: 100%;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      padding: 16px 12px;
-      background: #fff;
-      font-size: 16px;
-      text-align: center;
-      cursor: pointer;
-      transition: 0.15s;
-    }
-    .package-btn.selected {
-      border-color: var(--brand);
-      background: #fff5f0;
-      color: var(--brand-dark);
-      font-weight: 700;
-    }
-
-    .btn-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 14px;
-    }
-
-    .btn {
-      flex: 1;
-      border-radius: 12px;
-      border: none;
-      padding: 16px 12px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .btn-primary { background: var(--brand); color: #fff; }
-    .btn-secondary { background: #f1f3f5; color: #495057; }
-    .btn-primary:active { background: var(--brand-dark); }
-
-    .btn-full {
-      width: 100%;
-      margin-top: 8px;
-    }
-
-    .field { margin-bottom: 16px; }
-    label {
-      display: block;
-      font-size: 16px;
-      margin-bottom: 6px;
-      color: #495057;
-    }
-
-    input[type="text"],
-    input[type="tel"],
-    input[type="date"],
-    textarea {
-      width: 100%;
-      padding: 12px 12px;
-      border-radius: 10px;
-      border: 1px solid #dee2e6;
-      font-size: 16px;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 70px;
-    }
-
-    input:focus, textarea:focus { border-color: var(--brand); }
-
-    .address-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    .address-btn {
-      padding: 0 12px;
-      border-radius: 10px;
-      border: 1px solid var(--brand);
-      background: #fff;
-      font-size: 16px;
-      color: var(--brand);
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .done-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 999px;
-      border: 3px solid var(--brand);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 14px auto 18px;
-      font-size: 32px;
-      color: var(--brand);
-    }
-    .done-title {
-      text-align: center;
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-    .done-desc {
-      text-align: center;
-      font-size: 16px;
-      color: #868e96;
-      line-height: 1.5;
-      margin-bottom: 22px;
-    }
-  </style>
+    /* 약관 라벨 스타일 */
+    .agree-row {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 8px;
+    }
+    .agree-row label {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 500;
+    }
+  </style>
 </head>
 
 <body>
-  <div class="page-wrap">
-    <div class="card">
-      <div class="title">사장마켓 간편신청</div>
-      <div class="subtitle">소상공인 필수템, 사장마켓에서 무료로!</div>
+  <div class="form-container">
+    <h1>사장마켓 간편신청</h1>
 
-      <div class="steps">
-        <div class="step-dot active" data-step-dot="1"></div>
-        <div class="step-dot" data-step-dot="2"></div>
-        <div class="step-dot" data-step-dot="3"></div>
-      </div>
+    <!-- STEP 1 -->
+    <div id="step1" class="step active">
+      <div class="subtitle">패키지 선택</div>
+      <div class="option-btn" onclick="selectPackage(this, 'CCTV 무료 패키지')">CCTV 무료 패키지</div>
+      <div class="option-btn" onclick="selectPackage(this, 'POS 무료 패키지')">POS 무료 패키지</div>
+      <div class="option-btn" onclick="selectPackage(this, '정수기 무료 패키지')">정수기 무료 패키지</div>
+      <div class="option-btn" onclick="selectPackage(this, '기타 서비스')">기타 서비스</div>
 
-            <div class="step active" data-step="1">
-        <div class="section-label">원하시는 패키지를 선택해 주세요</div>
-        <div class="package-list">
-          <button class="package-btn" data-value="CCTV 무료 패키지">CCTV 무료 패키지</button>
-          <button class="package-btn" data-value="POS 무료 패키지">POS 무료 패키지</button>
-          <button class="package-btn" data-value="정수기 무료 패키지">정수기 무료 패키지</button>
-          <button class="package-btn" data-value="기타 상품 문의">기타 상품 문의</button>
-        </div>
-        <button class="btn btn-primary btn-full" id="next-1">다음</button>
-      </div>
+      <button class="btn" onclick="nextStep(2)">다음</button>
+    </div>
 
-            <div class="step" data-step="2">
-        <form id="applyForm">
-                    <input type="hidden" name="Package" id="packageInput"> 
+    <!-- STEP 2 -->
+    <div id="step2" class="step">
+      <div class="subtitle">설치 정보 입력</div>
 
-          <div class="field">
-            <label>이름</label>
-            <input type="text" id="name" name="Name" required>
-          </div>
+      <label>오픈 예정일</label>
+      <input type="date" id="openDate" required>
 
-          <div class="field">
-            <label>연락처</label>
-            <input type="tel" id="phone" name="Phone" required>
-                      </div>
+      <label>설치 주소</label>
+      <div style="display:flex; gap:8px;">
+        <input type="text" id="address" placeholder="주소찾기를 눌러 입력" readonly>
+        <button type="button" onclick="searchAddress()" style="width:110px; background:#333;" class="btn">주소찾기</button>
+      </div>
 
-          <div class="field">
-            <label>상호명</label>
-            <input type="text" id="shopName" name="ShopName">
-          </div>
+      <label>상세 주소</label>
+      <input type="text" id="addressDetail" placeholder="상세 주소를 입력해주세요">
 
-          <div class="field">
-            <label>주소</label>
-            <div class="address-row">
-              <input type="text" id="address" name="Address" readonly required>
-              <button type="button" class="address-btn" onclick="searchAddress()">주소검색</button>
-            </div>
-            <input type="text" id="addressDetail" name="AddressDetail" placeholder="상세 주소 입력">
-                      </div>
+      <label>연락처</label>
+      <input type="text" id="phone" placeholder="010-0000-0000">
 
-          <div class="field">
-            <label>오픈 예정일</label>
-            <input type="date" id="openDate" name="OpenDate">
-                      </div>
+      <label>가맹점/업체명</label>
+      <input type="text" id="shopName" placeholder="가게명을 입력해주세요">
 
-          <div class="field">
-            <label>추가 문의사항</label>
-            <textarea id="memo" name="Memo"></textarea>
-          </div>
+      <label>추가 문의사항</label>
+      <textarea id="memo" placeholder="남기실 내용이 있다면 작성해주세요"></textarea>
 
-          <div class="field">
-            <label style="font-weight:700;">개인정보 수집·이용 동의 (필수)</label>
-                        <label><input type="checkbox" id="agree1" name="PrivacyAgree" value="동의" required> 개인정보 수집·이용에 동의합니다.</label>
-          </div>
+      <button class="btn" onclick="nextStep(3)">다음</button>
+    </div>
 
-          <div class="field">
-            <label style="font-weight:700;">마케팅 정보 수신 동의 (선택)</label>
-                        <label><input type="checkbox" id="agree2" name="MarketingAgree" value="동의"> 마케팅 정보 수신에 동의합니다.</label>
-          </div>
+    <!-- STEP 3 -->
+    <div id="step3" class="step">
+      <div class="subtitle">약관 동의</div>
 
-          <div class="btn-row">
-            <button type="button" class="btn btn-secondary" id="prev-2">이전</button>
-            <button type="submit" class="btn btn-primary">신청하기</button>
-          </div>
-        </form>
-      </div>
+      <div class="agree-row">
+        <input type="checkbox" id="privacyAgree">
+        <label for="privacyAgree">개인정보 수집·이용에 동의합니다 (필수)</label>
+      </div>
 
-            <div class="step" data-step="3">
-        <div class="done-icon">✓</div>
-        <div class="done-title">제출이 완료되었습니다</div>
-        <div class="done-desc">담당자가 확인 후 순차적으로 연락드리겠습니다.</div>
-        <button class="btn btn-primary btn-full" id="back-home">처음으로</button>
-      </div>
+      <div class="agree-row">
+        <input type="checkbox" id="marketingAgree">
+        <label for="marketingAgree">마케팅 정보 수신 동의 (선택)</label>
+      </div>
 
-    </div>
-  </div>
+      <button class="btn" onclick="submitForm()">신청하기</button>
+    </div>
 
-  <script>
-    const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyJ3IcYXk-PokkOMP4Z3idnxVPa8la_66PQszxuruODiYpSWjddQdkycjh-CDkRjOZGnw/exec";
+  </div>
 
-    let selectedPackage = "";
+  <script>
+    let selectedPackage = "";
 
-    const steps = document.querySelectorAll(".step");
-    const dots = document.querySelectorAll(".step-dot");
+    function selectPackage(el, value) {
+      document.querySelectorAll(".option-btn").forEach(btn => btn.classList.remove("selected"));
+      el.classList.add("selected");
+      selectedPackage = value;
+    }
 
-    function setStep(stepNum) {
-      steps.forEach(step => step.classList.toggle("active", step.dataset.step === String(stepNum)));
-      dots.forEach(dot => dot.classList.toggle("active", dot.dataset.stepDot === String(stepNum)));
-    }
+    function nextStep(step) {
+      document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
+      document.getElementById(`step${step}`).classList.add("active");
+    }
 
-    const packageButtons = document.querySelectorAll(".package-btn");
-    const packageInput = document.getElementById("packageInput");
+    function searchAddress() {
+      new daum.Postcode({
+        oncomplete: function(data) {
+          document.getElementById("address").value = data.address;
+        }
+      }).open();
+    }
 
-    packageButtons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        packageButtons.forEach(b => b.classList.remove("selected"));
-        btn.classList.add("selected");
-        selectedPackage = btn.dataset.value;
-        packageInput.value = selectedPackage;
-      });
-    });
+    async function submitForm() {
 
-    document.getElementById("next-1").addEventListener("click", () => {
-      if (!selectedPackage) {
-        alert("패키지를 선택해 주세요.");
-        return;
-      }
-      setStep(2);
-    });
+      if (!selectedPackage) { alert("패키지를 선택해주세요."); return; }
+      if (!document.getElementById("privacyAgree").checked) {
+        alert("개인정보 수집·이용 동의는 필수입니다.");
+        return;
+      }
 
-    document.getElementById("prev-2").addEventListener("click", () => setStep(1));
+      const postData = {
+        package: selectedPackage,
+        openDate: document.getElementById("openDate").value,
+        address: document.getElementById("address").value,
+        addressDetail: document.getElementById("addressDetail").value,
+        phone: document.getElementById("phone").value,
+        shopName: document.getElementById("shopName").value,
+        memo: document.getElementById("memo").value,
+        privacyAgree: document.getElementById("privacyAgree").checked ? "동의" : "미동의",
+        marketingAgree: document.getElementById("marketingAgree").checked ? "동의" : "미동의"
+      };
 
-    document.getElementById("back-home").addEventListener("click", () => {
-      selectedPackage = "";
-      packageInput.value = "";
-      document.getElementById("applyForm").reset();
-      packageButtons.forEach(b => b.classList.remove("selected"));
-      setStep(1);
-    });
+      try {
+        const res = await fetch("YOUR_WEBAPP_URL_HERE", {
+          method: "POST",
+          body: new URLSearchParams(postData)
+        });
 
-    function searchAddress() {
-      new daum.Postcode({
-        oncomplete: function(data) {
-          const addr = data.roadAddress || data.address;
-          document.getElementById("address").value = addr;
-          document.getElementById("addressDetail").focus();
-        }
-      }).open();
-    }
-    window.searchAddress = searchAddress;
+        const text = await res.text();
+        if (text === "ok") {
+          window.location.href = "?page=complete";
+        } else {
+          alert("전송 실패: " + text);
+        }
 
-    // 전화번호 자동 하이픈
-    document.getElementById("phone").addEventListener("input", function(e) {
-      let v = e.target.value.replace(/[^0-9]/g, '');
-      if (v.length < 4) e.target.value = v;
-      else if (v.length < 7) e.target.value = v.slice(0,3) + '-' + v.slice(3);
-      else e.target.value = v.slice(0,3) + '-' + v.slice(3,7) + '-' + v.slice(7,11);
-    });
-
-    // 폼 제출
-    const form = document.getElementById("applyForm");
-    form.addEventListener("submit", function(e) {
-      e.preventDefault();
-      if (!form.reportValidity()) return;
-
-      // 폼 데이터를 객체로 변환
-      const formData = new FormData(form);
-      const data = {};
-      for (let [key, value] of formData.entries()) {
-        data[key] = value;
-      }
-
-      // 체크박스 미체크 시 '미동의'로 설정 (스프레드시트 열 순서에 맞게 필드를 조정합니다)
-      data["PrivacyAgree"] = document.getElementById("agree1").checked ? "동의" : "미동의";
-      data["MarketingAgree"] = document.getElementById("agree2").checked ? "동의" : "미동의";
-
-      // 스프레드시트의 컬럼 순서에 맞게 데이터 배열을 생성
-      // [Package, Name, Phone, ShopName, Address, AddressDetail, OpenDate, Memo, PrivacyAgree, MarketingAgree]
-      const orderedData = {
-        Package: data.Package,
-        Name: data.Name,
-        Phone: data.Phone,
-        ShopName: data.ShopName,
-        Address: data.Address,
-        AddressDetail: data.AddressDetail,
-        OpenDate: data.OpenDate,
-        Memo: data.Memo,
-        PrivacyAgree: data.PrivacyAgree,
-        MarketingAgree: data.MarketingAgree
-      };
-      
-      // JSON 형태의 데이터로 변환 후 전송 (GET 대신 POST를 사용하기 위해)
-      fetch(WEBAPP_URL, {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderedData), // JSON 객체로 전송
-        mode: "no-cors"
-      }).then(() => {
-        setStep(3);
-      }).catch(err => {
-        alert("전송 오류가 발생했습니다. 앱스 스크립트 코드를 확인해 주세요.");
-        console.error(err);
-      });
-    });
-  </script>
+      } catch (err) {
+        alert("오류 발생: " + err);
+      }
+    }
+  </script>
 </body>
 </html>
