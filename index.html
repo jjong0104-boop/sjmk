@@ -21,7 +21,6 @@
       --line: #e9ecef;
       --radius: 16px;
       --max-w: 420px;
-      --font-main: 16px;
     }
 
     * { box-sizing: border-box; }
@@ -34,10 +33,10 @@
       margin: 0;
       padding: 0;
       background: var(--bg);
-      font-family: "Noto Sans KR", sans-serif;
+      font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--text);
       -webkit-font-smoothing: antialiased;
-      font-size: var(--font-main);
+      font-size: 16px;
     }
 
     .page-wrap {
@@ -87,7 +86,7 @@
       background: #dee2e6;
     }
     .step-dot.active {
-      width: 22px;
+      width: 20px;
       background: var(--brand);
     }
 
@@ -97,7 +96,7 @@
     .section-label {
       font-size: 16px;
       font-weight: 600;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .package-list {
@@ -122,13 +121,13 @@
       border-color: var(--brand);
       background: #fff5f0;
       color: var(--brand-dark);
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .btn-row {
       display: flex;
-      gap: 10px;
-      margin-top: 10px;
+      gap: 8px;
+      margin-top: 14px;
     }
 
     .btn {
@@ -147,10 +146,10 @@
 
     .btn-full {
       width: 100%;
-      margin-top: 6px;
+      margin-top: 8px;
     }
 
-    .field { margin-bottom: 18px; }
+    .field { margin-bottom: 16px; }
     label {
       display: block;
       font-size: 16px;
@@ -163,22 +162,26 @@
     input[type="date"],
     textarea {
       width: 100%;
-      padding: 12px 10px;
+      padding: 12px 12px;
       border-radius: 10px;
       border: 1px solid #dee2e6;
       font-size: 16px;
     }
-    textarea { resize: vertical; min-height: 70px; }
+
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
 
     input:focus, textarea:focus { border-color: var(--brand); }
 
     .address-row {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       margin-bottom: 10px;
     }
     .address-btn {
-      padding: 0 14px;
+      padding: 0 12px;
       border-radius: 10px;
       border: 1px solid var(--brand);
       background: #fff;
@@ -192,25 +195,25 @@
       width: 60px;
       height: 60px;
       border-radius: 999px;
-      border: 2px solid var(--brand);
+      border: 3px solid var(--brand);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 10px auto 16px;
-      font-size: 30px;
+      margin: 14px auto 18px;
+      font-size: 32px;
       color: var(--brand);
     }
     .done-title {
       text-align: center;
       font-size: 20px;
       font-weight: 700;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     .done-desc {
       text-align: center;
       font-size: 16px;
       color: #868e96;
-      line-height: 1.6;
+      line-height: 1.5;
       margin-bottom: 22px;
     }
   </style>
@@ -264,7 +267,7 @@
             <label>주소</label>
             <div class="address-row">
               <input type="text" id="address" name="address" readonly required>
-              <button type="button" class="address-btn" onclick="searchAddress()">검색</button>
+              <button type="button" class="address-btn" onclick="searchAddress()">주소검색</button>
             </div>
             <input type="text" id="addressDetail" name="addressDetail" placeholder="상세 주소 입력">
           </div>
@@ -280,11 +283,13 @@
           </div>
 
           <div class="field">
-            <label><input type="checkbox" id="agree1" required> 개인정보 수집·이용에 동의합니다</label>
+            <label style="font-weight:700;">개인정보 수집·이용 동의 (필수)</label>
+            <label><input type="checkbox" id="agree1" name="privacyAgree" value="Y" required> 개인정보 수집·이용에 동의합니다.</label>
           </div>
 
           <div class="field">
-            <label><input type="checkbox" id="agree2"> 마케팅 정보 수신에 동의합니다 (선택)</label>
+            <label style="font-weight:700;">마케팅 정보 수신 동의 (선택)</label>
+            <label><input type="checkbox" id="agree2" name="marketingAgree" value="Y"> 마케팅 정보 수신에 동의합니다.</label>
           </div>
 
           <div class="btn-row">
@@ -299,7 +304,7 @@
         <div class="done-icon">✓</div>
         <div class="done-title">제출이 완료되었습니다</div>
         <div class="done-desc">담당자가 확인 후 순차적으로 연락드리겠습니다.</div>
-        <button class="btn btn-primary btn-full" id="back-home">처음으로 돌아가기</button>
+        <button class="btn btn-primary btn-full" id="back-home">처음으로</button>
       </div>
 
     </div>
@@ -359,7 +364,7 @@
     }
     window.searchAddress = searchAddress;
 
-    // 전화번호 자동 하이픈 처리
+    // 전화번호 자동 하이픈
     document.getElementById("phone").addEventListener("input", function(e) {
       let v = e.target.value.replace(/[^0-9]/g, '');
       if (v.length < 4) e.target.value = v;
@@ -367,20 +372,17 @@
       else e.target.value = v.slice(0,3) + '-' + v.slice(3,7) + '-' + v.slice(7,11);
     });
 
-    // 폼 제출 처리
+    // 폼 제출
     const form = document.getElementById("applyForm");
-
     form.addEventListener("submit", function(e) {
       e.preventDefault();
       if (!form.reportValidity()) return;
 
       const formData = new FormData(form);
 
-      const privacyValue = document.getElementById("agree1").checked ? "동의" : "미동의";
-      formData.append("privacyAgree", privacyValue);
-
-      const marketingValue = document.getElementById("agree2").checked ? "동의" : "미동의";
-      formData.append("marketingAgree", marketingValue);
+      // 체크 안한 경우 강제로 N 입력
+      if (!document.getElementById("agree1").checked) formData.append("privacyAgree", "N");
+      if (!document.getElementById("agree2").checked) formData.append("marketingAgree", "N");
 
       fetch(WEBAPP_URL, {
         method: "POST",
@@ -390,7 +392,6 @@
         setStep(3);
       }).catch(err => {
         alert("전송 오류가 발생했습니다.");
-        console.error(err);
       });
     });
   </script>
