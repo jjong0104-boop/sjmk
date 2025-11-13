@@ -382,11 +382,6 @@
       }).then(() => {
         setStep(3);
 
-        // 1.3초 뒤 자동 초기화
-        setTimeout(() => {
-          document.getElementById("back-home").click();
-        }, 1300);
-
       }).catch(err => {
         alert("전송 오류가 발생했습니다.");
       });
