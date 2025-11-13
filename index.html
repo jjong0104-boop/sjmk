@@ -21,6 +21,7 @@
       --line: #e9ecef;
       --radius: 16px;
       --max-w: 420px;
+      --font-main: 16px;
     }
 
     * { box-sizing: border-box; }
@@ -33,9 +34,10 @@
       margin: 0;
       padding: 0;
       background: var(--bg);
-      font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: "Noto Sans KR", sans-serif;
       color: var(--text);
       -webkit-font-smoothing: antialiased;
+      font-size: var(--font-main);
     }
 
     .page-wrap {
@@ -59,17 +61,17 @@
     }
 
     .title {
-      font-size: 20px;
+      font-size: 24px;
       font-weight: 700;
       text-align: center;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     .subtitle {
-      font-size: 13px;
+      font-size: 20px;
       text-align: center;
       color: #868e96;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
 
     .steps {
@@ -85,7 +87,7 @@
       background: #dee2e6;
     }
     .step-dot.active {
-      width: 20px;
+      width: 22px;
       background: var(--brand);
     }
 
@@ -93,15 +95,15 @@
     .step.active { display: block; }
 
     .section-label {
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
     }
 
     .package-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
       margin-bottom: 20px;
     }
 
@@ -109,9 +111,9 @@
       width: 100%;
       border-radius: 12px;
       border: 1px solid var(--line);
-      padding: 14px 12px;
+      padding: 16px 12px;
       background: #fff;
-      font-size: 14px;
+      font-size: 16px;
       text-align: center;
       cursor: pointer;
       transition: 0.15s;
@@ -125,17 +127,17 @@
 
     .btn-row {
       display: flex;
-      gap: 8px;
-      margin-top: 8px;
+      gap: 10px;
+      margin-top: 10px;
     }
 
     .btn {
       flex: 1;
       border-radius: 12px;
       border: none;
-      padding: 14px 12px;
-      font-size: 15px;
-      font-weight: 500;
+      padding: 16px 12px;
+      font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
     }
 
@@ -145,70 +147,71 @@
 
     .btn-full {
       width: 100%;
-      margin-top: 4px;
+      margin-top: 6px;
     }
 
-    .field { margin-bottom: 14px; }
+    .field { margin-bottom: 18px; }
     label {
       display: block;
-      font-size: 13px;
-      margin-bottom: 4px;
+      font-size: 16px;
+      margin-bottom: 6px;
       color: #495057;
     }
+
     input[type="text"],
     input[type="tel"],
     input[type="date"],
     textarea {
       width: 100%;
-      padding: 11px 10px;
+      padding: 12px 10px;
       border-radius: 10px;
       border: 1px solid #dee2e6;
-      font-size: 14px;
+      font-size: 16px;
     }
-    textarea { resize: vertical; min-height: 60px; }
+    textarea { resize: vertical; min-height: 70px; }
 
     input:focus, textarea:focus { border-color: var(--brand); }
 
     .address-row {
       display: flex;
-      gap: 8px;
-      margin-bottom: 8px;
+      gap: 10px;
+      margin-bottom: 10px;
     }
     .address-btn {
-      padding: 0 12px;
+      padding: 0 14px;
       border-radius: 10px;
       border: 1px solid var(--brand);
       background: #fff;
-      font-size: 13px;
+      font-size: 16px;
       color: var(--brand);
       cursor: pointer;
       white-space: nowrap;
     }
 
     .done-icon {
-      width: 52px;
-      height: 52px;
+      width: 60px;
+      height: 60px;
       border-radius: 999px;
       border: 2px solid var(--brand);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 10px auto 14px;
-      font-size: 28px;
+      margin: 10px auto 16px;
+      font-size: 30px;
       color: var(--brand);
     }
     .done-title {
       text-align: center;
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 700;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
     .done-desc {
       text-align: center;
-      font-size: 13px;
+      font-size: 16px;
       color: #868e96;
-      line-height: 1.5;
-      margin-bottom: 18px;
+      line-height: 1.6;
+      margin-bottom: 22px;
     }
   </style>
 </head>
@@ -225,7 +228,7 @@
         <div class="step-dot" data-step-dot="3"></div>
       </div>
 
-      <!-- 1단계 -->
+      <!-- STEP 1 -->
       <div class="step active" data-step="1">
         <div class="section-label">원하시는 패키지를 선택해 주세요</div>
         <div class="package-list">
@@ -237,7 +240,7 @@
         <button class="btn btn-primary btn-full" id="next-1">다음</button>
       </div>
 
-      <!-- 2단계 -->
+      <!-- STEP 2 -->
       <div class="step" data-step="2">
         <form id="applyForm">
           <input type="hidden" name="package" id="packageInput">
@@ -261,7 +264,7 @@
             <label>주소</label>
             <div class="address-row">
               <input type="text" id="address" name="address" readonly required>
-              <button type="button" class="address-btn" onclick="searchAddress()">주소검색</button>
+              <button type="button" class="address-btn" onclick="searchAddress()">검색</button>
             </div>
             <input type="text" id="addressDetail" name="addressDetail" placeholder="상세 주소 입력">
           </div>
@@ -277,13 +280,11 @@
           </div>
 
           <div class="field">
-            <label style="font-weight:600;">개인정보 수집·이용 동의 (필수)</label>
-            <label><input type="checkbox" id="agree1" required> 개인정보 수집·이용에 동의합니다.</label>
+            <label><input type="checkbox" id="agree1" required> 개인정보 수집·이용에 동의합니다</label>
           </div>
 
           <div class="field">
-            <label style="font-weight:600;">마케팅 정보 수신 동의 (선택)</label>
-            <label><input type="checkbox" id="agree2" name="marketingAgree" value="Y"> 마케팅 정보 수신에 동의합니다.</label>
+            <label><input type="checkbox" id="agree2"> 마케팅 정보 수신에 동의합니다 (선택)</label>
           </div>
 
           <div class="btn-row">
@@ -293,13 +294,14 @@
         </form>
       </div>
 
-      <!-- 3단계 -->
+      <!-- STEP 3 -->
       <div class="step" data-step="3">
         <div class="done-icon">✓</div>
         <div class="done-title">제출이 완료되었습니다</div>
         <div class="done-desc">담당자가 확인 후 순차적으로 연락드리겠습니다.</div>
-        <button class="btn btn-primary btn-full" id="back-home">처음으로</button>
+        <button class="btn btn-primary btn-full" id="back-home">처음으로 돌아가기</button>
       </div>
+
     </div>
   </div>
 
@@ -357,7 +359,7 @@
     }
     window.searchAddress = searchAddress;
 
-    // 전화번호 하이픈 자동 생성
+    // 전화번호 자동 하이픈 처리
     document.getElementById("phone").addEventListener("input", function(e) {
       let v = e.target.value.replace(/[^0-9]/g, '');
       if (v.length < 4) e.target.value = v;
@@ -365,15 +367,20 @@
       else e.target.value = v.slice(0,3) + '-' + v.slice(3,7) + '-' + v.slice(7,11);
     });
 
+    // 폼 제출 처리
     const form = document.getElementById("applyForm");
+
     form.addEventListener("submit", function(e) {
       e.preventDefault();
       if (!form.reportValidity()) return;
 
       const formData = new FormData(form);
-      if (!document.getElementById("agree2").checked) {
-        formData.append("marketingAgree", "N");
-      }
+
+      const privacyValue = document.getElementById("agree1").checked ? "동의" : "미동의";
+      formData.append("privacyAgree", privacyValue);
+
+      const marketingValue = document.getElementById("agree2").checked ? "동의" : "미동의";
+      formData.append("marketingAgree", marketingValue);
 
       fetch(WEBAPP_URL, {
         method: "POST",
@@ -381,9 +388,9 @@
         mode: "no-cors"
       }).then(() => {
         setStep(3);
-
       }).catch(err => {
         alert("전송 오류가 발생했습니다.");
+        console.error(err);
       });
     });
   </script>
