@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>사장마켓 간편신청</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <!-- 폰트 -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- 카카오 주소 검색 -->
+  <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+  <style>
+    :root {
+      --brand: #EB3B00;
+      --brand-dark: #d43200;
+      --bg: #f6f6f6;
+      --text: #1b1b1b;
+      --line: #e9ecef;
+      --radius: 16px;
+      --max-w: 420px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      font-family: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page-wrap {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .card {
+      width: 100%;
+      max-width: var(--max-w);
+      margin: 32px auto;
+      padding: 24px 20px 20px;
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      text-align: center;
+      color: #868e96;
+      margin-bottom: 20px;
+    }
+
+    /* 단계 표시 */
+    .steps {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+    .step-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: #dee2e6;
+    }
+    .step-dot.active {
+      width: 20px;
+      background: var(--brand);
+    }
+
+    .step {
+      display: none;
+    }
+    .step.active {
+      display: block;
+    }
+
+    .section-label {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .package-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .package-btn {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      padding: 14px 12px;
+      background: #fff;
+      font-size: 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.15s ease all;
+    }
+    .package-btn.selected {
+      border-color: var(--brand);
+      background: #fff5f0;
+      color: var(--brand-dark);
+      font-weight: 600;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      flex: 1;
+      border-radius: 12px;
+      border: none;
+      padding: 14px 12px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.15s ease all;
+    }
+
+    .btn-primary {
+      background: var(--brand);
+      color: #fff;
+    }
+    .btn-primary:active {
+      background: var(--brand-dark);
+    }
+    .btn-secondary {
+      background: #f1f3f5;
+      color: #495057;
+    }
+
+    .btn-full {
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    /* 폼 스타일 */
+    .field {
+      margin-bottom: 14px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+      color: #495057;
+    }
+    input[type="text"],
+    input[type="tel"],
+    input[type="date"],
+    textarea {
+      width: 100%;
+      padding: 11px 10px;
+      border-radius: 10px;
+      border: 1px solid #dee2e6;
+      font-size: 14px;
+      outline: none;
+    }
+    input:focus,
+    textarea:focus {
+      border-color: var(--brand);
+    }
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    .address-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .address-row input {
+      flex: 1;
+    }
+    .address-btn {
+      white-space: nowrap;
+      padding: 0 12px;
+      border-radius: 10px;
+      border: 1px solid var(--brand);
+      background: #fff;
+      font-size: 13px;
+      color: var(--brand);
+      cursor: pointer;
+    }
+
+    /* 완료 화면 */
+    .done-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 999px;
+      border: 2px solid var(--brand);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 10px auto 14px;
+      font-size: 28px;
+      color: var(--brand);
+    }
+    .done-title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .done-desc {
+      text-align: center;
+      font-size: 13px;
+      color: #868e96;
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        margin: 20px 12px;
+        padding: 20px 16px 18px;
+        border-radius: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-wrap">
+    <div class="card">
+      <div class="title">사장마켓 간편신청</div>
+      <div class="subtitle">통신 · CCTV · POS까지 한 번에 상담 신청하세요</div>
+
+      <!-- 단계 표시 -->
+      <div class="steps">
+        <div class="step-dot active" data-step-dot="1"></div>
+        <div class="step-dot" data-step-dot="2"></div>
+        <div class="step-dot" data-step-dot="3"></div>
+      </div>
+
+      <!-- 1단계: 패키지 선택 -->
+      <div class="step active" data-step="1">
+        <div class="section-label">원하시는 패키지를 선택해 주세요</div>
+        <div class="package-list">
+          <button class="package-btn" data-value="CCTV 무료 패키지">CCTV 무료 패키지</button>
+          <button class="package-btn" data-value="POS 무료 패키지">POS 무료 패키지</button>
+          <button class="package-btn" data-value="정수기 무료 패키지">정수기 무료 패키지</button>
+          <button class="package-btn" data-value="기타 상품 문의">기타 상품 문의</button>
+        </div>
+        <button class="btn btn-primary btn-full" id="next-1">다음</button>
+      </div>
+
+      <!-- 2단계: 기본정보 입력 -->
+      <div class="step" data-step="2">
+        <form id="applyForm">
+          <input type="hidden" name="package" id="packageInput">
+
+          <div class="section-label">기본 정보 입력</div>
+
+          <div class="field">
+            <label for="name">이름</label>
+            <input type="text" id="name" name="name" placeholder="이름을 입력해 주세요" required>
+          </div>
+
+          <div class="field">
+            <label for="phone">연락처</label>
+            <input type="tel" id="phone" name="phone" placeholder="휴대전화 번호를 입력해 주세요" required>
+          </div>
+
+          <div class="field">
+            <label for="shopName">상호명 (예정이라면 가게명)</label>
+            <input type="text" id="shopName" name="shopName" placeholder="상호명을 입력해 주세요">
+          </div>
+
+          <div class="field">
+            <label>주소</label>
+            <div class="address-row">
+              <input type="text" id="address" name="address" placeholder="도로명 주소" readonly required>
+              <button type="button" class="address-btn" onclick="searchAddress()">주소검색</button>
+            </div>
+            <input type="text" id="addressDetail" placeholder="상세 주소를 입력해 주세요">
+          </div>
+
+          <div class="field">
+            <label for="openDate">오픈 예정일</label>
+            <input type="date" id="openDate" name="openDate">
+          </div>
+
+          <div class="field">
+            <label for="memo">추가 문의사항 (선택)</label>
+            <textarea id="memo" name="memo" placeholder="원하시는 상담 내용이나 시간대를 적어주세요."></textarea>
+          </div>
+
+          <div class="btn-row">
+            <button type="button" class="btn btn-secondary" id="prev-2">이전</button>
+            <button type="submit" class="btn btn-primary">신청하기</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- 3단계: 완료 -->
+      <div class="step" data-step="3">
+        <div class="done-icon">✓</div>
+        <div class="done-title">제출이 완료되었습니다</div>
+        <div class="done-desc">
+          담당자가 확인 후 순차적으로 연락드리겠습니다.<br>
+          상담량에 따라 약간의 지연이 발생할 수 있습니다.
+        </div>
+        <button class="btn btn-primary btn-full" id="back-home">처음으로</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ✅ 여기 WebApp URL을 넣어 주세요!
+    const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyJ3IcYXk-PokkOMP4Z3idnxVPa8la_66PQszxuruODiYpSWjddQdkycjh-CDkRjOZGnw/exec";
+
+    let selectedPackage = "";
+
+    const steps = document.querySelectorAll(".step");
+    const dots = document.querySelectorAll(".step-dot");
+
+    function setStep(stepNum) {
+      steps.forEach(step => {
+        step.classList.toggle("active", step.dataset.step === String(stepNum));
+      });
+      dots.forEach(dot => {
+        dot.classList.toggle("active", dot.dataset.stepDot === String(stepNum));
+      });
+    }
+
+    // 패키지 선택
+    const packageButtons = document.querySelectorAll(".package-btn");
+    const packageInput = document.getElementById("packageInput");
+
+    packageButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        packageButtons.forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        selectedPackage = btn.dataset.value;
+        packageInput.value = selectedPackage;
+      });
+    });
+
+    // 1단계 → 2단계
+    document.getElementById("next-1").addEventListener("click", () => {
+      if (!selectedPackage) {
+        alert("원하시는 패키지를 선택해 주세요.");
+        return;
+      }
+      setStep(2);
+    });
+
+    // 2단계 → 1단계 (이전)
+    document.getElementById("prev-2").addEventListener("click", () => {
+      setStep(1);
+    });
+
+    // 완료 후 처음으로
+    document.getElementById("back-home").addEventListener("click", () => {
+      // 초기화
+      selectedPackage = "";
+      packageInput.value = "";
+      document.getElementById("applyForm").reset();
+      packageButtons.forEach(b => b.classList.remove("selected"));
+      setStep(1);
+    });
+
+    // 주소 검색 (카카오 주소)
+    function searchAddress() {
+      new daum.Postcode({
+        oncomplete: function(data) {
+          const addr = data.roadAddress || data.address;
+          document.getElementById("address").value = addr;
+          document.getElementById("addressDetail").focus();
+        }
+      }).open();
+    }
+    window.searchAddress = searchAddress;
+
+    // 폼 제출 → Apps Script로 전송
+    const form = document.getElementById("applyForm");
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      if (!form.reportValidity()) return;
+
+      const formData = new FormData(form);
+
+      // GitHub Pages → Apps Script (no-cors)
+      fetch(WEBAPP_URL, {
+        method: "POST",
+        body: formData,
+        mode: "no-cors"
+      }).then(() => {
+        setStep(3);
+      }).catch(err => {
+        alert("전송 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+        console.error(err);
+      });
+    });
+  </script>
+</body>
+</html>
