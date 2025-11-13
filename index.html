@@ -7,190 +7,261 @@
   <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
   <style>
-    * { box-sizing: border-box; font-family: "Noto Sans KR"; }
-    body { background:#f6f6f6; margin:0; display:flex; justify-content:center; }
+    * { box-sizing: border-box; font-family: "Noto Sans KR", sans-serif; }
+    body {
+      background: #f6f6f6;
+      margin: 0; padding: 0;
+      display: flex; justify-content: center;
+    }
+
     .form-container {
-      width:420px; background:#fff; padding:32px 24px; border-radius:20px;
-      margin:20px 0; box-shadow:0 4px 20px rgba(0,0,0,0.1);
+      width: 420px;
+      background: #fff;
+      padding: 32px 24px;
+      border-radius: 20px;
+      margin: 20px 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
 
-    h1 { font-size:24px; font-weight:700; text-align:center; margin-bottom:10px; }
-    .subtitle { font-size:20px; font-weight:700; margin:16px 0; }
-
-    input, textarea {
-      width:100%; padding:14px; font-size:16px;
-      border:1.5px solid #ddd; border-radius:10px; margin-bottom:14px;
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      text-align: center;
     }
-    textarea { height:80px; resize:none; }
+
+    .subtitle {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      margin-top: 10px;
+    }
+
+    label {
+      display: block;
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
 
     .option-btn {
-      width:100%; padding:16px; margin-bottom:12px;
-      border-radius:10px; border:1.5px solid #ddd;
-      font-size:16px; text-align:center;
-      cursor:pointer; transition:.2s;
+      width: 100%; padding: 16px; margin-bottom: 12px;
+      border-radius: 10px; border: 1.5px solid #ddd; text-align: center;
+      background: #fff; font-size: 16px; cursor: pointer; transition: .2s;
     }
     .option-btn.selected {
-      border-color:#EB3B00; background:#FFF5F2; color:#EB3B00; font-weight:700;
+      border-color: #EB3B00; background: #FFF5F2; color: #EB3B00; font-weight: 600;
     }
+
+    input[type="text"], input[type="email"], input[type="date"], textarea {
+      width: 100%; padding: 14px; font-size: 16px;
+      border: 1.5px solid #ddd; border-radius: 10px;
+      margin-bottom: 14px;
+    }
+    textarea { height: 80px; resize: none; }
+
     .btn {
-      width:100%; background:#EB3B00; color:#fff; font-size:16px;
-      padding:15px 0; border:none; border-radius:10px; cursor:pointer;
-      margin-top:6px;
+      width: 100%; padding: 15px 0;
+      background: #EB3B00; color: #fff;
+      font-size: 16px; font-weight: 600;
+      border: none; border-radius: 10px;
+      margin-top: 10px; cursor: pointer;
+    }
+    .btn:hover { background: #d43200; }
+
+    .agree-box {
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+      margin-top: 10px;
     }
 
-    .step { display:none; }
-    .step.active { display:block; }
+    .agree-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
 
-    .agree-row { display:flex; align-items:flex-start; gap:10px; margin-bottom:14px; }
-    .agree-row label { font-size:16px; margin:0; }
-    
+    .agree-row label {
+      font-size: 16px;
+      font-weight: 500;
+      margin: 0;
+    }
+
     /* 완료 페이지 */
-    .done-icon {
-      width:60px; height:60px; border-radius:50%;
-      border:3px solid #EB3B00; color:#EB3B00;
-      display:flex; align-items:center; justify-content:center;
-      font-size:30px; margin:20px auto;
+    .complete-box {
+      text-align: center;
+      padding: 40px 20px;
     }
-    .done-title {
-      font-size:22px; text-align:center; font-weight:700; margin-bottom:10px;
-    }
-    .done-desc {
-      text-align:center; font-size:16px; color:#777; margin-bottom:20px;
+
+    .back-btn {
+      margin-top: 20px;
+      display: inline-block;
+      padding: 14px 28px;
+      background: #EB3B00;
+      color: #fff;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
     }
   </style>
 </head>
 
 <body>
-  <div class="form-container">
 
+  <!-- FORM 영역 -->
+  <div class="form-container" id="formPage">
     <h1>사장마켓 간편신청</h1>
 
-    <!-- STEP 1 ----------------------------------------- -->
+    <!-- STEP 1 -->
     <div id="step1" class="step active">
       <div class="subtitle">패키지 선택</div>
-
       <div class="option-btn" onclick="selectPackage(this, 'CCTV 무료 패키지')">CCTV 무료 패키지</div>
       <div class="option-btn" onclick="selectPackage(this, 'POS 무료 패키지')">POS 무료 패키지</div>
       <div class="option-btn" onclick="selectPackage(this, '정수기 무료 패키지')">정수기 무료 패키지</div>
-      <div class="option-btn" onclick="selectPackage(this, '기타 상품 문의')">기타 상품 문의</div>
-
+      <div class="option-btn" onclick="selectPackage(this, '기타 서비스')">기타 서비스</div>
       <button class="btn" onclick="nextStep(2)">다음</button>
     </div>
 
-    <!-- STEP 2 ----------------------------------------- -->
+    <!-- STEP 2 -->
     <div id="step2" class="step">
-      <div class="subtitle">기본 정보 입력</div>
+      <div class="subtitle">정보 입력</div>
 
-      <label>이름</label>
-      <input type="text" id="name" required>
+      <label>오픈 예정일 *</label>
+      <input type="date" id="openDate" required>
 
-      <label>연락처</label>
-      <input type="text" id="phone" placeholder="010-0000-0000">
-
-      <label>가맹점/업체명</label>
-      <input type="text" id="shopName">
-
-      <label>설치 주소</label>
+      <label>설치 주소 *</label>
       <div style="display:flex; gap:8px;">
-        <input type="text" id="address" readonly placeholder="주소 검색을 눌러 입력" style="flex:1;">
-        <button class="btn" style="width:110px; background:#333;" onclick="searchAddress()">주소검색</button>
+        <input type="text" id="address" placeholder="주소찾기를 눌러 입력" readonly required>
+        <button type="button" onclick="searchAddress()" style="width:110px; background:#333;" class="btn">주소찾기</button>
       </div>
 
       <label>상세 주소</label>
-      <input type="text" id="addressDetail">
+      <input type="text" id="addressDetail" placeholder="상세 주소 입력">
 
-      <label>오픈 예정일</label>
-      <input type="date" id="openDate">
+      <label>연락처 *</label>
+      <input type="text" id="phone" placeholder="010-0000-0000" required oninput="formatPhone(this)">
+
+      <label>가맹점/업체명</label>
+      <input type="text" id="shopName" placeholder="가게명을 입력해주세요">
 
       <label>추가 문의사항</label>
-      <textarea id="memo"></textarea>
+      <textarea id="memo" placeholder="남기실 내용이 있다면 작성해주세요"></textarea>
 
-      <hr style="margin:20px 0; border:none; border-top:1px solid #eee;">
+      <!-- 약관 동의 -->
+      <div class="agree-box">
+        <label style="font-size:18px; font-weight:700; margin-bottom:14px;">약관 동의</label>
 
-      <div class="subtitle" style="font-size:18px; margin-bottom:10px;">약관 동의</div>
+        <div class="agree-row">
+          <input type="checkbox" id="privacyAgree">
+          <label for="privacyAgree">개인정보 수집·이용 동의 (필수)</label>
+        </div>
 
-      <div class="agree-row">
-        <input type="checkbox" id="privacyAgree">
-        <label for="privacyAgree">개인정보 수집·이용 동의 (필수)</label>
-      </div>
-
-      <div class="agree-row">
-        <input type="checkbox" id="marketingAgree">
-        <label for="marketingAgree">마케팅 정보 수신 동의 (선택)</label>
+        <div class="agree-row">
+          <input type="checkbox" id="marketingAgree">
+          <label for="marketingAgree">마케팅 정보 수신 동의 (선택)</label>
+        </div>
       </div>
 
       <button class="btn" onclick="submitForm()">신청하기</button>
     </div>
 
-    <!-- STEP 3 — 완료 페이지 ----------------------------------------- -->
-    <div id="step3" class="step">
-      <div class="done-icon">✓</div>
-      <div class="done-title">제출이 완료되었습니다!</div>
-      <div class="done-desc">담당자가 확인 후 순차적으로 연락드리겠습니다.</div>
-      <button class="btn" onclick="goHome()">처음으로</button>
-    </div>
+  </div>
 
+  <!-- COMPLETE PAGE -->
+  <div class="form-container" id="completePage" style="display:none;">
+    <div class="complete-box">
+      <h1>제출이 완료되었습니다!</h1>
+      <p>담당자가 확인 후 연락드리겠습니다.</p>
+      <a class="back-btn" href="">처음으로</a>
+    </div>
   </div>
 
   <script>
     let selectedPackage = "";
 
-    function selectPackage(el, val) {
+    /** 패키지 선택 */
+    function selectPackage(el, value) {
       document.querySelectorAll(".option-btn").forEach(btn => btn.classList.remove("selected"));
       el.classList.add("selected");
-      selectedPackage = val;
+      selectedPackage = value;
     }
 
-    function nextStep(n) {
+    /** STEP 이동 */
+    function nextStep(step) {
+      if (step === 2) {
+        if (!selectedPackage) {
+          alert("패키지를 선택해주세요.");
+          return;
+        }
+      }
+
       document.querySelectorAll(".step").forEach(s => s.classList.remove("active"));
-      document.getElementById(`step${n}`).classList.add("active");
+      document.getElementById(`step${step}`).classList.add("active");
     }
 
-    function goHome() {
-      nextStep(1);
-    }
-
-    // 주소검색
+    /** 주소 검색 */
     function searchAddress() {
       new daum.Postcode({
-        oncomplete: function(data) { document.getElementById("address").value = data.address; }
+        oncomplete: function(data) {
+          document.getElementById("address").value = data.address;
+        }
       }).open();
     }
 
-    // 전화번호 하이픈 자동 입력
-    document.getElementById("phone").addEventListener("input", function() {
-      let v = this.value.replace(/[^0-9]/g, "");
-      if (v.length <= 3) this.value = v;
-      else if (v.length <= 7) this.value = v.slice(0,3)+"-"+v.slice(3);
-      else this.value = v.slice(0,3)+"-"+v.slice(3,7)+"-"+v.slice(7,11);
-    });
+    /** 전화번호 자동 포맷 */
+    function formatPhone(input) {
+      let val = input.value.replace(/[^0-9]/g, "");
+      if (val.length > 3 && val.length <= 7)
+        input.value = val.replace(/(\d{3})(\d{1,4})/, "$1-$2");
+      else if (val.length > 7)
+        input.value = val.replace(/(\d{3})(\d{4})(\d{1,4})/, "$1-$2-$3");
+      else
+        input.value = val;
+    }
 
-    // 제출
+    /** 제출 */
     async function submitForm() {
-      
-      if (!selectedPackage) return alert("패키지를 선택해주세요.");
-      if (!document.getElementById("privacyAgree").checked)
-        return alert("개인정보 동의는 필수입니다.");
+      // 필수값 체크
+      if (!document.getElementById("openDate").value) return alert("오픈 예정일을 입력해주세요.");
+      if (!document.getElementById("address").value) return alert("주소를 입력해주세요.");
+      if (!document.getElementById("phone").value) return alert("연락처를 입력해주세요.");
 
-      const data = {
+      if (!document.getElementById("privacyAgree").checked) {
+        alert("개인정보 수집·이용 동의는 필수입니다.");
+        return;
+      }
+
+      const postData = {
         package: selectedPackage,
-        name: document.getElementById("name").value,
-        phone: document.getElementById("phone").value,
-        shopName: document.getElementById("shopName").value,
+        openDate: document.getElementById("openDate").value,
         address: document.getElementById("address").value,
         addressDetail: document.getElementById("addressDetail").value,
-        openDate: document.getElementById("openDate").value,
+        phone: document.getElementById("phone").value,
+        shopName: document.getElementById("shopName").value,
         memo: document.getElementById("memo").value,
         privacyAgree: document.getElementById("privacyAgree").checked ? "동의" : "미동의",
         marketingAgree: document.getElementById("marketingAgree").checked ? "동의" : "미동의"
       };
 
-      const res = await fetch("https://script.google.com/macros/s/AKfycbzZyviKJtAHMzGC9IkZ5f3CNqKacBqF8DFOlGP0c2vxW6rgFVtdJiH8tsrO3Nae_3ntQQ/exec", {
-        method:"POST",
-        body:new URLSearchParams(data)
-      });
-      
-      nextStep(3); // 완료페이지로 이동
+      try {
+        const res = await fetch("https://script.google.com/macros/s/AKfycbzZyviKJtAHMzGC9IkZ5f3CNqKacBqF8DFOlGP0c2vxW6rgFVtdJiH8tsrO3Nae_3ntQQ/exec", {
+          method: "POST",
+          body: new URLSearchParams(postData)
+        });
+
+        const text = await res.text();
+        if (text === "ok") {
+          document.getElementById("formPage").style.display = "none";
+          document.getElementById("completePage").style.display = "block";
+        } else {
+          alert("전송 실패: " + text);
+        }
+
+      } catch (err) {
+        alert("오류 발생: " + err);
+      }
     }
 
   </script>
